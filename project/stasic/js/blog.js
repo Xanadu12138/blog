@@ -1,7 +1,8 @@
 var xmlhttp;
-var state=3;
+var state = 3;
 var username;
 var password;
+
 function loadXMLDoc(url) {
     xmlhttp = null;
     //alert(method1);
@@ -17,9 +18,10 @@ function loadXMLDoc(url) {
 
         xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         //alert(username);
-        if(state !=3){
-        xmlhttp.send("username=" + username + "&password=" + password);}
-        if(state ==3){
+        if (state != 3) {
+            xmlhttp.send("username=" + username + "&password=" + password);
+        }
+        if (state == 3) {
             xmlhttp.send(null);
         }
 
@@ -29,9 +31,9 @@ function loadXMLDoc(url) {
 }
 
 function state_Change() {
-    
+
     if (xmlhttp.readyState == 4) { // 4 = "loaded"
-        if (xmlhttp.status == 200 && state ==2) { // 200 = OK
+        if (xmlhttp.status == 200 && state == 2) { // 200 = OK
             var signa = xmlhttp.responseText;
             var signajson = JSON.parse(signa);
             alert(signajson.msg);
@@ -62,18 +64,32 @@ function state_Change() {
                 selfname.innerHTML = username;
                 selfinfo.appendChild(selfname);
             }
-        }else if(xmlhttp.status == 200 && state ==3){
-            var com=xmlhttp.responseText;
-            var comjason=JSON.parse(com);
-            var tbody = document.getElementById("tb");
-            for(var i = 0;i < comjason.length; i++){ //遍历一下json数据
-                var trow = getDataRow(comjason[i]); //定义一个方法,返回tr数据 
-                tbody.appendChild(trow);
-
-            } 
+        } else if (xmlhttp.status == 200 && state == 3) {
+            var com = xmlhttp.responseText;
+            var comjason = JSON.parse(com);
+           // alert(comjason);
+            //var tbody2 = document.createElement("tbody");
+            var _table=document.getElementById("table1");
+            //_table.appendChild(tbody2);
             
-        } 
-        else {
+            for (var i = 0; i < comjason.length; i++) { //遍历一下json数据
+                
+                var row = document.createElement('tr'); //创建行  
+                _table.appendChild(row);
+                var idCell = document.createElement('td'); //创建第一列id  
+                idCell.innerHTML=comjason[i].userID; //加入行  ，下面类似  
+                row.appendChild(idCell);
+                var tiCell = document.createElement('td'); //创建第一列id  
+                tiCell.innerHTML=comjason[i].title; //加入行  ，下面类似  
+                row.appendChild(tiCell);
+                var coCell = document.createElement('td'); //创建第一列id  
+                coCell.innerHTML=comjason[i].content; //加入行  ，下面类似  
+                row.appendChild(coCell);
+                
+            }
+
+
+        } else {
             alert("Problem retrieving XML data");
         }
     }
@@ -85,14 +101,16 @@ function sign() {
     var signdiv = document.getElementById("signdiv");
     signdiv.style.setProperty('display', 'block');
 }
+
 function clearbox() {
     var bdiv = document.getElementById("bdiv");
     bdiv.style.setProperty('display', 'none');
     var signdiv = document.getElementById("signdiv");
     signdiv.style.setProperty('display', 'none');
-  
-  }
-function signin(){
+
+}
+
+function signin() {
     username = document.getElementById("user").value;
     password = document.getElementById("password").value;
     //alert(username + password);
@@ -100,13 +118,14 @@ function signin(){
     var url = "http://www.zhengchengfeng.cn:8080/login";
     //alert(url);
     if (username != "" && password != "") {
-      loadXMLDoc(url);
+        loadXMLDoc(url);
     } else {
-      alert("请输入用户名和密码");
+        alert("请输入用户名和密码");
     }
-  
+
 }
-function signup(){
+
+function signup() {
     username = document.getElementById("user").value;
     password = document.getElementById("password").value;
     //alert(username + password);
@@ -114,23 +133,24 @@ function signup(){
     var url = "http://www.zhengchengfeng.cn:8080/addUser";
     //alert(url);
     if (username != "" && password != "") {
-      loadXMLDoc(url);
+        loadXMLDoc(url);
     } else {
-      alert("请输入用户名和密码");
+        alert("请输入用户名和密码");
     }
-}  
-function getDataRow(h){  
-         var row = document.createElement('tr'); //创建行  
-           
-         var idCell = document.createElement('td'); //创建第一列id  
-         idCell.innerHTML = h.id; //填充数据  
-         row.appendChild(idCell); //加入行  ，下面类似  
-           
-         var nameCell = document.createElement('td');//创建第二列name  
-         nameCell.innerHTML = h.name;  
-         row.appendChild(nameCell);  
-           
-         var jobCell = document.createElement('td');//创建第三列job  
-         jobCell.innerHTML = h.job;  
-         row.appendChild(jobCell);  
+}
+
+function getDataRow(h) {
+    var row = document.createElement('tr'); //创建行  
+
+    var idCell = document.createElement('td'); //创建第一列id  
+    idCell.innerHTML = h.id; //填充数据  
+    row.appendChild(idCell); //加入行  ，下面类似  
+
+    var nameCell = document.createElement('td'); //创建第二列name  
+    nameCell.innerHTML = h.name;
+    row.appendChild(nameCell);
+
+    var jobCell = document.createElement('td'); //创建第三列job  
+    jobCell.innerHTML = h.job;
+    row.appendChild(jobCell);
 }

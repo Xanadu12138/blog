@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    
+
     <div id="container">
         <button id="but" onclick="sign()">登录/注册</button>
         <div class="bdiv" id="bdiv"></div>
@@ -28,21 +28,24 @@
             <button class="signbutton" onclick="signin()">登录</button>
             <button class="signbutton" onclick="signup()">注册</button>
         </div>
-        <table width="600" border="1" cellspacing="0">  
-               <thead>  
-                      <tr>  
-                             <th>ID</th>  
-                             <th>标题</th>  
-                             <th>内容</th>  
-                              
-                          </tr>   
-                   </thead>  
-               <tbody id="tb"></tbody>  
+        <table  border="1"  id="table1" >  
+          
+                <tr>
+                    <th>用户名</th>
+                    <th>标题</th>
+                    <th>内容</th>
+                </tr>
+                
+             
         </table>  
-    
+
 
     </div>
-   
+    <script>
+        window.onload = function () {
+            loadXMLDoc("http://www.zhengchengfeng.cn:8080/comment");
+        }
+    </script>
 </body>
 
 </html>

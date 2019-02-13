@@ -65,6 +65,7 @@
 .td{
     border: 1px solid black;
     text-align: center;
+    font: 12px sans-serif;
 
 }
 #table1 caption{

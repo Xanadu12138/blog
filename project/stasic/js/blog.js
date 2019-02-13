@@ -2,6 +2,11 @@ var xmlhttp;
 var state = 3;
 var username;
 var password;
+var role = 3;
+var comid;
+var ptitle;
+var pcontent;
+var filename;
 
 function loadXMLDoc(url) {
     xmlhttp = null;
@@ -18,11 +23,20 @@ function loadXMLDoc(url) {
 
         xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         //alert(username);
-        if (state != 3) {
+        if (state == 1 || state == 2) { //sign
             xmlhttp.send("username=" + username + "&password=" + password);
         }
         if (state == 3) {
             xmlhttp.send(null);
+        }
+        if (state == 4) {
+            xmlhttp.send("comID=" + comid);
+        }
+        if(state == 5){
+            xmlhttp.send("userID=1" + "&title=" + ptitle+"&content="+pcontent);
+        }
+        if(state ==6){
+            xmlhttp.send("userID=1" + "&title=" + ptitle+"&content="+pcontent);
         }
 
     } else {
@@ -63,31 +77,52 @@ function state_Change() {
                 var selfname = document.createElement("a");
                 selfname.innerHTML = username;
                 selfinfo.appendChild(selfname);
+                if (signbjson.role == "operator") {
+                    role = 1;
+                } else {
+                    role = 0;
+                }
             }
         } else if (xmlhttp.status == 200 && state == 3) {
             var com = xmlhttp.responseText;
             var comjason = JSON.parse(com);
-           // alert(comjason);
-            //var tbody2 = document.createElement("tbody");
-            var _table=document.getElementById("table1");
-            //_table.appendChild(tbody2);
-            
+            // alert(comjason);
+            var tbody2 = document.createElement("tbody");
+            var _table = document.getElementById("table1");
+            _table.appendChild(tbody2);
+
             for (var i = 0; i < comjason.length; i++) { //遍历一下json数据
-                
-                var row = document.createElement('tr'); //创建行  
-                _table.appendChild(row);
+                comid = comjason[i].comID;
+                var row = tbody2.insertRow(i);
                 var idCell = document.createElement('td'); //创建第一列id  
-                idCell.innerHTML=comjason[i].userID; //加入行  ，下面类似  
+                idCell.innerHTML = comjason[i].userID; //加入行  ，下面类似 
+                idCell.className = "td";
                 row.appendChild(idCell);
                 var tiCell = document.createElement('td'); //创建第一列id  
-                tiCell.innerHTML=comjason[i].title; //加入行  ，下面类似  
+                tiCell.innerHTML = comjason[i].title; //加入行  ，下面类似 
+                tiCell.className = "td";
                 row.appendChild(tiCell);
                 var coCell = document.createElement('td'); //创建第一列id  
-                coCell.innerHTML=comjason[i].content; //加入行  ，下面类似  
+                coCell.innerHTML = comjason[i].content; //加入行  ，下面类似 
+                coCell.className = "td";
                 row.appendChild(coCell);
-                
+                var delCell = document.createElement("td");
+                delCell.innerHTML = "<a href='#' onclick=delcom(" + comid + ")>删除</a>"; //加入行  ，下面类似 
+                delCell.className = "td";
+                row.appendChild(delCell);
+
             }
 
+
+        } else if (xmlhttp.status == 200 && state == 4) {
+            var delmsg = xmlhttp.responseText;
+            var delmsgjason = JSON.parse(delmsg);
+            alert(delmsgjason.msg);
+        } else if (xmlhttp.status == 200 && state == 5) {
+            var addmsg = xmlhttp.responseText;
+            var addmsgjason = JSON.parse(addmsg);
+            alert(addmsgjason.msg);
+            clearbox();
 
         } else {
             alert("Problem retrieving XML data");
@@ -100,6 +135,7 @@ function sign() {
     bdiv.style.setProperty('display', 'block');
     var signdiv = document.getElementById("signdiv");
     signdiv.style.setProperty('display', 'block');
+    
 }
 
 function clearbox() {
@@ -107,6 +143,8 @@ function clearbox() {
     bdiv.style.setProperty('display', 'none');
     var signdiv = document.getElementById("signdiv");
     signdiv.style.setProperty('display', 'none');
+    var adddiv = document.getElementById("adddiv");
+    adddiv.style.setProperty('display', 'none');
 
 }
 
@@ -139,18 +177,42 @@ function signup() {
     }
 }
 
-function getDataRow(h) {
-    var row = document.createElement('tr'); //创建行  
+function delcom(id) {
+    comid = id;
+    if (role == 1) {
+        state = 4;
+        loadXMLDoc("http://www.zhengchengfeng.cn:8080/delComment");
 
-    var idCell = document.createElement('td'); //创建第一列id  
-    idCell.innerHTML = h.id; //填充数据  
-    row.appendChild(idCell); //加入行  ，下面类似  
+    }
+}
 
-    var nameCell = document.createElement('td'); //创建第二列name  
-    nameCell.innerHTML = h.name;
-    row.appendChild(nameCell);
+function addcom() {
+    
+    if (role != 3) {
+        var bdiv = document.getElementById("bdiv");
+        bdiv.style.setProperty('display', 'block');
+        var adddiv = document.getElementById("adddiv");
+        adddiv.style.setProperty('display', 'block');
+        //loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment")
+    }else{
+        alert("请先登录");
+    }
 
-    var jobCell = document.createElement('td'); //创建第三列job  
-    jobCell.innerHTML = h.job;
-    row.appendChild(jobCell);
+
+}
+function addmsg(){
+    state=5;
+    ptitle=document.getElementById("ptitle").value;
+    pcontent=document.getElementById("pcontent").value;   
+    loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment");
+}
+function upload(){
+    state=6;
+    filename=document.getElementById("img").value;
+    var obj=filename.lastIndexOf("\\");
+    var imgname=filename.substring(obj+1);
+    loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
+    
+    
+
 }

@@ -56,3 +56,23 @@
     background: #333;
 
 }
+#table1{
+    margin: auto;
+    width: 90%;
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+.td{
+    border: 1px solid black;
+    text-align: center;
+
+}
+#table1 caption{
+    color:blue;
+
+}
+.td1{
+    border: 1px solid black;
+    text-align: center;
+    color: #333;
+}

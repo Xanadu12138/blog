@@ -211,8 +211,19 @@ function upload(){
     filename=document.getElementById("img").value;
     var obj=filename.lastIndexOf("\\");
     var imgname=filename.substring(obj+1);
-    loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
+    var base=image2Base64(filename);
+    alert(base);
+    //loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
     
     
 
+}
+function image2Base64(img) {
+    var canvas = document.createElement("canvas");
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+    var dataURL = canvas.toDataURL("image/png");
+    return dataURL;
 }

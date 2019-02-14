@@ -8,6 +8,7 @@ var ptitle;
 var pcontent;
 var filename;
 var img1;
+var userID;
 function loadXMLDoc(url) {
   xmlhttp = null;
   //alert(method1);
@@ -38,11 +39,11 @@ function loadXMLDoc(url) {
       xmlhttp.send("comID=" + comid);
     }
     if (state == 5) {
-      xmlhttp.send("userID=1" + "&title=" + ptitle + "&content=" + pcontent);
+      xmlhttp.send("userID=" + userID+ "&title=" + ptitle + "&content=" + pcontent);
     }
     if (state == 6) {
       console.log(img1);
-      xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=1");
+      xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=" + userID);
     }
   } else {
     alert("Your browser does not support XMLHTTP.");
@@ -65,7 +66,8 @@ function state_Change() {
       } else if (signbjson.errcode == 2) {
         alert(signbjson.msg);
       } else if (signbjson.errcode == 0) {
-        alert(signbjson.msg);
+        userID = signbjson.useID;
+        alert(userID);
         var bdiv = document.getElementById("bdiv");
         bdiv.style.setProperty("display", "none");
         var signdiv = document.getElementById("signdiv");
@@ -123,10 +125,12 @@ function state_Change() {
       var delmsg = xmlhttp.responseText;
       var delmsgjason = JSON.parse(delmsg);
       alert(delmsgjason.msg);
+      location.reload();
     } else if (xmlhttp.status == 200 && state == 5) {
       var addmsg = xmlhttp.responseText;
       var addmsgjason = JSON.parse(addmsg);
       alert(addmsgjason.msg);
+      location.reload();
       clearbox();
     } else if (xmlhttp.status == 200 && state == 6) {
       var addmsg = xmlhttp.responseText;
@@ -230,8 +234,8 @@ function upload() {
       } else {
         //执行上传操作
      //  img1 = reader.result.substring(reader.result.indexOf(",") + 1);
-        img1 = reader.result;
-      //  img1 = dataURLtoBlob(reader.result);
+      //  img1 = reader.result;
+        img1 = dataURLtoBlob(reader.result);
         alert(img1);
         loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
       }

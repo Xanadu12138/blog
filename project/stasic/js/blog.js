@@ -41,7 +41,8 @@ function loadXMLDoc(url) {
       xmlhttp.send("userID=1" + "&title=" + ptitle + "&content=" + pcontent);
     }
     if (state == 6) {
-      xmlhttp.send("&filename=" + filename + "&Image=" + img1 + "&userID=1");
+      alert(img1);
+      xmlhttp.send("filename=" + filename + "&Image=" + img1 + "&userID=1");
     }
   } else {
     alert("Your browser does not support XMLHTTP.");
@@ -209,16 +210,20 @@ function addmsg() {
 function upload() {
   state = 6;
   var oFReader = new FileReader();
-  filename="1.jpg"
+  filename="1.png"
   var filename1 = document.getElementById("img").files[0];
+ 
   var src = getObjectURL(filename1);
-  alert(src);
-  img1 = convertImgToBase64(src, function(base64Img){
-      
+ // alert(src);
+  convertImgToBase64(src, function(base64Img){
+    img1= base64Img;   
   });
+  
+
   loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
 }
 function convertImgToBase64(url, callback, outputFormat) {
+  var dataURL;
   var canvas = document.createElement("CANVAS"),
     ctx = canvas.getContext("2d"),
     img = new Image();
@@ -228,14 +233,12 @@ function convertImgToBase64(url, callback, outputFormat) {
     canvas.width = img.width;
   
     ctx.drawImage(img, 0, 0);
-    var dataURL = canvas.toDataURL(outputFormat || "image/png");
+    dataURL = canvas.toDataURL(outputFormat || "image/png");
     callback.call(this, dataURL);
     canvas = null;
   };
   img.src = url;
-    alert(url);
-  return img;
-}
+   }
 function getObjectURL(file) {
   var url = null;
   if (window.createObjcectURL != undefined) {

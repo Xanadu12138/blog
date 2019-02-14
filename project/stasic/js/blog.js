@@ -209,21 +209,30 @@ function addmsg(){
 function upload(){
     state=6;
     filename=document.getElementById("img").value;
+    alert(filename);
     var obj=filename.lastIndexOf("\\");
     var imgname=filename.substring(obj+1);
-    var base=image2Base64(filename);
+    convertImgToBase64(filename, function(base64Img){
+        // Base64DataURL
+    });   
     alert(base);
     //loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
     
     
 
 }
-function image2Base64(img) {
-    var canvas = document.createElement("canvas");
-    canvas.width = img.width;
-    canvas.height = img.height;
-    var ctx = canvas.getContext("2d");
-    ctx.drawImage(img, 0, 0, img.width, img.height);
-    var dataURL = canvas.toDataURL("image/png");
-    return dataURL;
+function convertImgToBase64(url, callback, outputFormat){
+    var canvas = document.createElement('CANVAS'),
+        ctx = canvas.getContext('2d'),
+        img = new Image;
+    img.crossOrigin = 'Anonymous';
+    img.onload = function(){
+        canvas.height = img.height;
+        canvas.width = img.width;
+        ctx.drawImage(img,0,0);
+        var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+        callback.call(this, dataURL);
+        canvas = null; 
+    };
+    img.src = url;
 }

@@ -41,8 +41,8 @@ function loadXMLDoc(url) {
       xmlhttp.send("userID=1" + "&title=" + ptitle + "&content=" + pcontent);
     }
     if (state == 6) {
-      alert(img1);
-      xmlhttp.send("filename=" + filename + "&Image=" + img1 + "&userID=1");
+      console.log(img1);
+      xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=1");
     }
   } else {
     alert("Your browser does not support XMLHTTP.");
@@ -209,44 +209,43 @@ function addmsg() {
 }
 function upload() {
   state = 6;
-  var oFReader = new FileReader();
-  filename="1.png"
+  var AllowImgFileSize = 2100000; //上传图片最大值(单位字节)（ 2 M = 2097152 B ）超过2M上传失败
+  var file=document.getElementById("img").value;
+  var pos = file.lastIndexOf("\\");
+  filename= file.substring(pos+1);
+  alert(filename);
   var filename1 = document.getElementById("img").files[0];
+  var imgUrlBase64;
+  var reader = new FileReader();
+  if (filename1) {
+    //将文件以Data URL形式读入页面  
+    imgUrlBase64 = reader.readAsDataURL(filename1);
+    reader.onload = function (e) {
+      var ImgFileSize = reader.result.substring(reader.result.indexOf(",") + 1).length;//截取base64码部分（可选可不选，需要与后台沟通）
+      alert(ImgFileSize);
+      if (AllowImgFileSize != 0 && AllowImgFileSize < reader.result.length) {
+       
+        alert('上传失败，请上传不大于2M的图片！');
+        return;
+      } else {
+        //执行上传操作
+     //  img1 = reader.result.substring(reader.result.indexOf(",") + 1);
+        img1 = reader.result;
+      //  img1 = dataURLtoBlob(reader.result);
+        alert(img1);
+        loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
+      }
+    }
+  }          
  
-  var src = getObjectURL(filename1);
- // alert(src);
-  convertImgToBase64(src, function(base64Img){
-    img1= base64Img;   
-  });
   
-
-  loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
 }
-function convertImgToBase64(url, callback, outputFormat) {
-  var dataURL;
-  var canvas = document.createElement("CANVAS"),
-    ctx = canvas.getContext("2d"),
-    img = new Image();
-  img.crossOrigin = "Anonymous";
-  img.onload = function() {
-    canvas.height = img.height;
-    canvas.width = img.width;
-  
-    ctx.drawImage(img, 0, 0);
-    dataURL = canvas.toDataURL(outputFormat || "image/png");
-    callback.call(this, dataURL);
-    canvas = null;
-  };
-  img.src = url;
-   }
-function getObjectURL(file) {
-  var url = null;
-  if (window.createObjcectURL != undefined) {
-    url = window.createOjcectURL(file);
-  } else if (window.URL != undefined) {
-    url = window.URL.createObjectURL(file);
-  } else if (window.webkitURL != undefined) {
-    url = window.webkitURL.createObjectURL(file);
+
+function dataURLtoBlob(dataurl) {
+  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
   }
-  return url;
+  return new Blob([u8arr], { type: mime });
 }

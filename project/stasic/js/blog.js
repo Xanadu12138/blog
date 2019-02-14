@@ -7,232 +7,243 @@ var comid;
 var ptitle;
 var pcontent;
 var filename;
-
+var img1;
 function loadXMLDoc(url) {
-    xmlhttp = null;
-    //alert(method1);
-    if (window.XMLHttpRequest) { // code for all new browsers
-        xmlhttp = new XMLHttpRequest();
-    } else if (window.ActiveXObject) { // code for IE5 and IE6
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  xmlhttp = null;
+  //alert(method1);
+  if (window.XMLHttpRequest) {
+    // code for all new browsers
+    xmlhttp = new XMLHttpRequest();
+  } else if (window.ActiveXObject) {
+    // code for IE5 and IE6
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  if (xmlhttp != null) {
+    xmlhttp.onreadystatechange = state_Change;
+    xmlhttp.open("POST", url, true);
+
+    xmlhttp.setRequestHeader(
+      "Content-Type",
+      "application/x-www-form-urlencoded"
+    );
+    //alert(username);
+    if (state == 1 || state == 2) {
+      //sign
+      xmlhttp.send("username=" + username + "&password=" + password);
     }
-    if (xmlhttp != null) {
-        xmlhttp.onreadystatechange = state_Change;
-        xmlhttp.open("POST", url, true);
-
-
-        xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        //alert(username);
-        if (state == 1 || state == 2) { //sign
-            xmlhttp.send("username=" + username + "&password=" + password);
-        }
-        if (state == 3) {
-            xmlhttp.send(null);
-        }
-        if (state == 4) {
-            xmlhttp.send("comID=" + comid);
-        }
-        if(state == 5){
-            xmlhttp.send("userID=1" + "&title=" + ptitle+"&content="+pcontent);
-        }
-        if(state ==6){
-            xmlhttp.send("userID=1" + "&title=" + ptitle+"&content="+pcontent);
-        }
-
-    } else {
-        alert("Your browser does not support XMLHTTP.");
+    if (state == 3) {
+      xmlhttp.send(null);
     }
+    if (state == 4) {
+      xmlhttp.send("comID=" + comid);
+    }
+    if (state == 5) {
+      xmlhttp.send("userID=1" + "&title=" + ptitle + "&content=" + pcontent);
+    }
+    if (state == 6) {
+      xmlhttp.send("&filename=" + filename + "&Image=" + img1 + "&userID=1");
+    }
+  } else {
+    alert("Your browser does not support XMLHTTP.");
+  }
 }
 
 function state_Change() {
-
-    if (xmlhttp.readyState == 4) { // 4 = "loaded"
-        if (xmlhttp.status == 200 && state == 2) { // 200 = OK
-            var signa = xmlhttp.responseText;
-            var signajson = JSON.parse(signa);
-            alert(signajson.msg);
-        } else if (xmlhttp.status == 200 && state == 1) {
-            var signb = xmlhttp.responseText;
-            var signbjson = JSON.parse(signb);
-            if (signbjson.errcode == 1) {
-                alert(signbjson.msg);
-            } else if (signbjson.errcode == 2) {
-                alert(signbjson.msg);
-            } else if (signbjson.errcode == 0) {
-                alert(signbjson.msg);
-                var bdiv = document.getElementById("bdiv");
-                bdiv.style.setProperty('display', 'none');
-                var signdiv = document.getElementById("signdiv");
-                signdiv.style.setProperty('display', 'none');
-                var parent = document.getElementById("container");
-                var child = document.getElementById("but");
-                parent.removeChild(child);
-                var selfinfo = document.createElement("div");
-                selfinfo.className = "selfinfo";
-                parent.appendChild(selfinfo)
-                var selfimg = document.createElement("i");
-                selfimg.className = "selfimg";
-                //selfimg.style.background="url("+signbjson.imgUrl+")";
-                selfinfo.appendChild(selfimg);
-                var selfname = document.createElement("a");
-                selfname.innerHTML = username;
-                selfinfo.appendChild(selfname);
-                if (signbjson.role == "operator") {
-                    role = 1;
-                } else {
-                    role = 0;
-                }
-            }
-        } else if (xmlhttp.status == 200 && state == 3) {
-            var com = xmlhttp.responseText;
-            var comjason = JSON.parse(com);
-            // alert(comjason);
-            var tbody2 = document.createElement("tbody");
-            var _table = document.getElementById("table1");
-            _table.appendChild(tbody2);
-
-            for (var i = 0; i < comjason.length; i++) { //遍历一下json数据
-                comid = comjason[i].comID;
-                var row = tbody2.insertRow(i);
-                var idCell = document.createElement('td'); //创建第一列id  
-                idCell.innerHTML = comjason[i].userID; //加入行  ，下面类似 
-                idCell.className = "td";
-                row.appendChild(idCell);
-                var tiCell = document.createElement('td'); //创建第一列id  
-                tiCell.innerHTML = comjason[i].title; //加入行  ，下面类似 
-                tiCell.className = "td";
-                row.appendChild(tiCell);
-                var coCell = document.createElement('td'); //创建第一列id  
-                coCell.innerHTML = comjason[i].content; //加入行  ，下面类似 
-                coCell.className = "td";
-                row.appendChild(coCell);
-                var delCell = document.createElement("td");
-                delCell.innerHTML = "<a href='#' onclick=delcom(" + comid + ")>删除</a>"; //加入行  ，下面类似 
-                delCell.className = "td";
-                row.appendChild(delCell);
-
-            }
-
-
-        } else if (xmlhttp.status == 200 && state == 4) {
-            var delmsg = xmlhttp.responseText;
-            var delmsgjason = JSON.parse(delmsg);
-            alert(delmsgjason.msg);
-        } else if (xmlhttp.status == 200 && state == 5) {
-            var addmsg = xmlhttp.responseText;
-            var addmsgjason = JSON.parse(addmsg);
-            alert(addmsgjason.msg);
-            clearbox();
-
+  if (xmlhttp.readyState == 4) {
+    // 4 = "loaded"
+    if (xmlhttp.status == 200 && state == 2) {
+      // 200 = OK
+      var signa = xmlhttp.responseText;
+      var signajson = JSON.parse(signa);
+      alert(signajson.msg);
+    } else if (xmlhttp.status == 200 && state == 1) {
+      var signb = xmlhttp.responseText;
+      var signbjson = JSON.parse(signb);
+      if (signbjson.errcode == 1) {
+        alert(signbjson.msg);
+      } else if (signbjson.errcode == 2) {
+        alert(signbjson.msg);
+      } else if (signbjson.errcode == 0) {
+        alert(signbjson.msg);
+        var bdiv = document.getElementById("bdiv");
+        bdiv.style.setProperty("display", "none");
+        var signdiv = document.getElementById("signdiv");
+        signdiv.style.setProperty("display", "none");
+        var parent = document.getElementById("container");
+        var child = document.getElementById("but");
+        parent.removeChild(child);
+        var selfinfo = document.createElement("div");
+        selfinfo.className = "selfinfo";
+        parent.appendChild(selfinfo);
+        var selfimg = document.createElement("i");
+        selfimg.className = "selfimg";
+        //selfimg.style.background="url("+signbjson.imgUrl+")";
+        selfinfo.appendChild(selfimg);
+        var selfname = document.createElement("a");
+        selfname.innerHTML = username;
+        selfinfo.appendChild(selfname);
+        if (signbjson.role == "operator") {
+          role = 1;
         } else {
-            alert("Problem retrieving XML data");
+          role = 0;
         }
+      }
+    } else if (xmlhttp.status == 200 && state == 3) {
+      var com = xmlhttp.responseText;
+      var comjason = JSON.parse(com);
+      // alert(comjason);
+      var tbody2 = document.createElement("tbody");
+      var _table = document.getElementById("table1");
+      _table.appendChild(tbody2);
+
+      for (var i = 0; i < comjason.length; i++) {
+        //遍历一下json数据
+        comid = comjason[i].comID;
+        var row = tbody2.insertRow(i);
+        var idCell = document.createElement("td"); //创建第一列id
+        idCell.innerHTML = comjason[i].userID; //加入行  ，下面类似
+        idCell.className = "td";
+        row.appendChild(idCell);
+        var tiCell = document.createElement("td"); //创建第一列id
+        tiCell.innerHTML = comjason[i].title; //加入行  ，下面类似
+        tiCell.className = "td";
+        row.appendChild(tiCell);
+        var coCell = document.createElement("td"); //创建第一列id
+        coCell.innerHTML = comjason[i].content; //加入行  ，下面类似
+        coCell.className = "td";
+        row.appendChild(coCell);
+        var delCell = document.createElement("td");
+        delCell.innerHTML =
+          "<a href='#' onclick=delcom(" + comid + ")>删除</a>"; //加入行  ，下面类似
+        delCell.className = "td";
+        row.appendChild(delCell);
+      }
+    } else if (xmlhttp.status == 200 && state == 4) {
+      var delmsg = xmlhttp.responseText;
+      var delmsgjason = JSON.parse(delmsg);
+      alert(delmsgjason.msg);
+    } else if (xmlhttp.status == 200 && state == 5) {
+      var addmsg = xmlhttp.responseText;
+      var addmsgjason = JSON.parse(addmsg);
+      alert(addmsgjason.msg);
+      clearbox();
+    } else if (xmlhttp.status == 200 && state == 6) {
+      var addmsg = xmlhttp.responseText;
+      var addmsgjason = JSON.parse(addmsg);
+      alert(addmsgjason.msg);
+    } else {
+      alert("Problem retrieving XML data");
     }
+  }
 }
 
 function sign() {
-    var bdiv = document.getElementById("bdiv");
-    bdiv.style.setProperty('display', 'block');
-    var signdiv = document.getElementById("signdiv");
-    signdiv.style.setProperty('display', 'block');
-    
+  var bdiv = document.getElementById("bdiv");
+  bdiv.style.setProperty("display", "block");
+  var signdiv = document.getElementById("signdiv");
+  signdiv.style.setProperty("display", "block");
 }
 
 function clearbox() {
-    var bdiv = document.getElementById("bdiv");
-    bdiv.style.setProperty('display', 'none');
-    var signdiv = document.getElementById("signdiv");
-    signdiv.style.setProperty('display', 'none');
-    var adddiv = document.getElementById("adddiv");
-    adddiv.style.setProperty('display', 'none');
-
+  var bdiv = document.getElementById("bdiv");
+  bdiv.style.setProperty("display", "none");
+  var signdiv = document.getElementById("signdiv");
+  signdiv.style.setProperty("display", "none");
+  var adddiv = document.getElementById("adddiv");
+  adddiv.style.setProperty("display", "none");
 }
 
 function signin() {
-    username = document.getElementById("user").value;
-    password = document.getElementById("password").value;
-    //alert(username + password);
-    state = 1;
-    var url = "http://www.zhengchengfeng.cn:8080/login";
-    //alert(url);
-    if (username != "" && password != "") {
-        loadXMLDoc(url);
-    } else {
-        alert("请输入用户名和密码");
-    }
-
+  username = document.getElementById("user").value;
+  password = document.getElementById("password").value;
+  //alert(username + password);
+  state = 1;
+  var url = "http://www.zhengchengfeng.cn:8080/login";
+  //alert(url);
+  if (username != "" && password != "") {
+    loadXMLDoc(url);
+  } else {
+    alert("请输入用户名和密码");
+  }
 }
 
 function signup() {
-    username = document.getElementById("user").value;
-    password = document.getElementById("password").value;
-    //alert(username + password);
-    state = 2;
-    var url = "http://www.zhengchengfeng.cn:8080/addUser";
-    //alert(url);
-    if (username != "" && password != "") {
-        loadXMLDoc(url);
-    } else {
-        alert("请输入用户名和密码");
-    }
+  username = document.getElementById("user").value;
+  password = document.getElementById("password").value;
+  //alert(username + password);
+  state = 2;
+  var url = "http://www.zhengchengfeng.cn:8080/addUser";
+  //alert(url);
+  if (username != "" && password != "") {
+    loadXMLDoc(url);
+  } else {
+    alert("请输入用户名和密码");
+  }
 }
 
 function delcom(id) {
-    comid = id;
-    if (role == 1) {
-        state = 4;
-        loadXMLDoc("http://www.zhengchengfeng.cn:8080/delComment");
-
-    }
+  comid = id;
+  if (role == 1) {
+    state = 4;
+    loadXMLDoc("http://www.zhengchengfeng.cn:8080/delComment");
+  }
 }
 
 function addcom() {
-    
-    if (role != 3) {
-        var bdiv = document.getElementById("bdiv");
-        bdiv.style.setProperty('display', 'block');
-        var adddiv = document.getElementById("adddiv");
-        adddiv.style.setProperty('display', 'block');
-        //loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment")
-    }else{
-        alert("请先登录");
-    }
-
-
+  if (role != 3) {
+    var bdiv = document.getElementById("bdiv");
+    bdiv.style.setProperty("display", "block");
+    var adddiv = document.getElementById("adddiv");
+    adddiv.style.setProperty("display", "block");
+    //loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment")
+  } else {
+    alert("请先登录");
+  }
 }
-function addmsg(){
-    state=5;
-    ptitle=document.getElementById("ptitle").value;
-    pcontent=document.getElementById("pcontent").value;   
-    loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment");
+function addmsg() {
+  state = 5;
+  ptitle = document.getElementById("ptitle").value;
+  pcontent = document.getElementById("pcontent").value;
+  loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment");
 }
-function upload(){
-    state=6;
-    filename=document.getElementById("img").value;
-    alert(filename);
-    var obj=filename.lastIndexOf("\\");
-    var imgname=filename.substring(obj+1);
-    convertImgToBase64(filename, function(base64Img){
-        // Base64DataURL
-    });   
-    alert(base);
-    //loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
-    
-    
-
+function upload() {
+  state = 6;
+  var oFReader = new FileReader();
+  filename="1.jpg"
+  var filename1 = document.getElementById("img").files[0];
+  var src = getObjectURL(filename1);
+  alert(src);
+  img1 = convertImgToBase64(src, function(base64Img){
+      
+  });
+  loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
 }
-function convertImgToBase64(url, callback, outputFormat){
-    var canvas = document.createElement('CANVAS'),
-        ctx = canvas.getContext('2d'),
-        img = new Image;
-    img.crossOrigin = 'Anonymous';
-    img.onload = function(){
-        canvas.height = img.height;
-        canvas.width = img.width;
-        ctx.drawImage(img,0,0);
-        var dataURL = canvas.toDataURL(outputFormat || 'image/png');
-        callback.call(this, dataURL);
-        canvas = null; 
-    };
-    img.src = url;
+function convertImgToBase64(url, callback, outputFormat) {
+  var canvas = document.createElement("CANVAS"),
+    ctx = canvas.getContext("2d"),
+    img = new Image();
+  img.crossOrigin = "Anonymous";
+  img.onload = function() {
+    canvas.height = img.height;
+    canvas.width = img.width;
+  
+    ctx.drawImage(img, 0, 0);
+    var dataURL = canvas.toDataURL(outputFormat || "image/png");
+    callback.call(this, dataURL);
+    canvas = null;
+  };
+  img.src = url;
+    alert(url);
+  return img;
+}
+function getObjectURL(file) {
+  var url = null;
+  if (window.createObjcectURL != undefined) {
+    url = window.createOjcectURL(file);
+  } else if (window.URL != undefined) {
+    url = window.URL.createObjectURL(file);
+  } else if (window.webkitURL != undefined) {
+    url = window.webkitURL.createObjectURL(file);
+  }
+  return url;
 }

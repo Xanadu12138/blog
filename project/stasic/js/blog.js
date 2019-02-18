@@ -223,7 +223,7 @@ function upload() {
   var reader = new FileReader();
   if (filename1) {
     //将文件以Data URL形式读入页面  
-    imgUrlBase64 = reader.readAsDataURL(filename1);
+    imgUrlBase64 = reader.readAsBinaryString(filename1);
     reader.onload = function (e) {
       var ImgFileSize = reader.result.substring(reader.result.indexOf(",") + 1).length;//截取base64码部分（可选可不选，需要与后台沟通）
       alert(ImgFileSize);
@@ -233,10 +233,10 @@ function upload() {
         return;
       } else {
         //执行上传操作
-     //  img1 = reader.result.substring(reader.result.indexOf(",") + 1);
-      //  img1 = reader.result;
-        img1 = dataURLtoBlob(reader.result);
-        alert(img1);
+     // img1 = reader.result.substring(reader.result.indexOf(",") + 1);
+        img1 = reader.result;
+      //  img1 = dataURLtoBlob(reader.result);
+       
         loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
       }
     }
@@ -246,10 +246,15 @@ function upload() {
 }
 
 function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+  var arr = dataurl.split(','),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
   while (n--) {
     u8arr[n] = bstr.charCodeAt(n);
   }
-  return new Blob([u8arr], { type: mime });
+  return new Blob([u8arr], {
+    type: mime
+  });
 }

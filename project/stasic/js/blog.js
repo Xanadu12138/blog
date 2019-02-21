@@ -10,7 +10,7 @@ var filename;
 var img1;
 var userID;
 var comlen;
-var form=new FormData();
+var form=new FormData(document);
 function loadXMLDoc(url) {
   xmlhttp = null;
   //alert(method1);
@@ -49,7 +49,7 @@ function loadXMLDoc(url) {
       xmlhttp.send("userID=" + userID+ "&title=" + ptitle + "&content=" + pcontent);
     }
     if (state == 6) {//上传
-      console.log(form);
+     console.log(form);
       xmlhttp.send(form);
     }
   } else {
@@ -256,10 +256,10 @@ function upload() {
   filename = file1.substring(pos + 1);
   alert(filename);
   var filename1 = document.getElementById("img").files[0];
-  console.log(filename1);
+ // console.log(filename1);
   img1=filename1;
   form.append("filename",filename);
-  form.append("Image",filename1);
+  form.append("image",filename1);
   form.append("userID",2);
   
   loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");

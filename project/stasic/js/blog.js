@@ -9,6 +9,7 @@ var pcontent;
 var filename;
 var img1;
 var userID;
+var comlen;
 function loadXMLDoc(url) {
   xmlhttp = null;
   //alert(method1);
@@ -101,8 +102,10 @@ function state_Change() {
 
       for (var i = 0; i < comjason.length; i++) {
         //遍历一下json数据
+        //comlen = comjason.length;
         comid = comjason[i].comID;
         var row = tbody2.insertRow(i);
+        row.id = comid;
         var idCell = document.createElement("td"); //创建第一列id
         idCell.innerHTML = comjason[i].userID; //加入行  ，下面类似
         idCell.className = "td";
@@ -130,7 +133,30 @@ function state_Change() {
       var addmsg = xmlhttp.responseText;
       var addmsgjason = JSON.parse(addmsg);
       alert(addmsgjason.msg);
-      location.reload();
+      comid = comid + 1;
+      alert(comid);
+        var tbody3 = document.getElementsByTagName("tbody");
+        //alert(tbody3);
+        var row = tbody3.insertRow(comlen+1);
+        
+        var idCell = document.createElement("td"); //创建第一列id
+        idCell.innerHTML = userID; //加入行  ，下面类似
+        idCell.className = "td";
+        row.appendChild(idCell);
+        var tiCell = document.createElement("td"); //创建第一列id
+        tiCell.innerHTML = ptitle; //加入行  ，下面类似
+        tiCell.className = "td";
+        row.appendChild(tiCell);
+        var coCell = document.createElement("td"); //创建第一列id
+        coCell.innerHTML = pcontent; //加入行  ，下面类似
+        coCell.className = "td";
+        row.appendChild(coCell);
+        var delCell = document.createElement("td");
+        delCell.innerHTML =
+          "<a href='#' onclick=delcom(" + comid + ")>删除</a>"; //加入行  ，下面类似
+        delCell.className = "td";
+        row.appendChild(delCell);
+      //location.reload();
       clearbox();
     } else if (xmlhttp.status == 200 && state == 6) {
       var addmsg = xmlhttp.responseText;
@@ -217,7 +243,7 @@ function upload() {
   var file=document.getElementById("img").value;
   var pos = file.lastIndexOf("\\");
   filename= file.substring(pos+1);
-  alert(filename);
+  //alert(filename);
   var filename1 = document.getElementById("img").files[0];
   var imgUrlBase64;
   var reader = new FileReader();

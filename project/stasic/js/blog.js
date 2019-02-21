@@ -255,6 +255,10 @@ function upload() {
   filename = file1.substring(pos + 1);
   alert(filename);
   var filename1 = document.getElementById("img").files[0];
+  console.log(filename1);
+  img1=filename1;
+  loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
+/*
   var reader = new FileReader();
   reader.readAsBinaryString(filename1);
   if (filename1) {
@@ -264,7 +268,7 @@ function upload() {
       alert(img1);
       loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
     }
-  }
+  }*/
 }
 
 

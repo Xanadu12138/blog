@@ -173,6 +173,9 @@ function state_Change() {
       var addmsgjason = JSON.parse(addmsg);
       alert(addmsgjason.msg);
     } else {
+      var addmsg = xmlhttp.responseText;
+      var addmsgjason = JSON.parse(addmsg);
+      alert(addmsgjason.msg);
       alert("Problem retrieving XML data");
     }
   }

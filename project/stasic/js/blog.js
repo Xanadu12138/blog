@@ -9,7 +9,7 @@ var pcontent;
 var filename;
 var img1;
 var userID;
-
+var comlen;
 function loadXMLDoc(url) {
   xmlhttp = null;
   //alert(method1);
@@ -34,20 +34,20 @@ function loadXMLDoc(url) {
 
     }
     //alert(username);
-    if (state == 1 || state == 2) {
+    if (state == 1 || state == 2) {//登录or注册
       //sign
       xmlhttp.send("username=" + username + "&password=" + password);
     }
-    if (state == 3) {
+    if (state == 3) {//读取表格
       xmlhttp.send(null);
     }
-    if (state == 4) {
+    if (state == 4) {//删除
       xmlhttp.send("comID=" + comid);
     }
-    if (state == 5) {
-      xmlhttp.send("userID=" + userID + "&title=" + ptitle + "&content=" + pcontent);
+    if (state == 5) {//加评论
+      xmlhttp.send("userID=" + userID+ "&title=" + ptitle + "&content=" + pcontent);
     }
-    if (state == 6) {
+    if (state == 6) {//上传
       console.log(img1);
       xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=" + userID);
     }
@@ -102,13 +102,16 @@ function state_Change() {
       var comjason = JSON.parse(com);
       // alert(comjason);
       var tbody2 = document.createElement("tbody");
+      tbody2.id="tbody2";
       var _table = document.getElementById("table1");
       _table.appendChild(tbody2);
-
+      comlen = comjason.length;
       for (var i = 0; i < comjason.length; i++) {
         //遍历一下json数据
+        
         comid = comjason[i].comID;
         var row = tbody2.insertRow(i);
+        row.id = comid;
         var idCell = document.createElement("td"); //创建第一列id
         idCell.innerHTML = comjason[i].userID; //加入行  ，下面类似
         idCell.className = "td";
@@ -131,12 +134,38 @@ function state_Change() {
       var delmsg = xmlhttp.responseText;
       var delmsgjason = JSON.parse(delmsg);
       alert(delmsgjason.msg);
-      location.reload();
+      var tbody4=document.getElementById("tbody2");
+      var row2=document.getElementById(comid);
+      tbody4.removeChild(row2);
+      comlen=tbody4.length;
     } else if (xmlhttp.status == 200 && state == 5) {
       var addmsg = xmlhttp.responseText;
       var addmsgjason = JSON.parse(addmsg);
-      alert(addmsgjason.msg);
-      location.reload();
+      //alert(addmsgjason.msg);
+      comid = comid + 1;
+      //alert(comid);
+        //alert(comlen);
+        var tbody3=document.getElementById("tbody2");
+        var row1 = tbody3.insertRow(comlen);
+        row1.id=comid;
+        var idCell1 = document.createElement("td"); //创建第一列id
+        idCell1.innerHTML = userID; //加入行  ，下面类似
+        idCell1.className = "td";
+        row1.appendChild(idCell1);
+        var tiCell1 = document.createElement("td"); //创建第一列id
+        tiCell1.innerHTML = ptitle; //加入行  ，下面类似
+        tiCell1.className = "td";
+        row1.appendChild(tiCell1);
+        var coCell1 = document.createElement("td"); //创建第一列id
+        coCell1.innerHTML = pcontent; //加入行  ，下面类似
+        coCell1.className = "td";
+        row1.appendChild(coCell1);
+        var delCell1 = document.createElement("td");
+        delCell1.innerHTML =
+          "<a href='#' onclick=delcom(" + comid + ")>删除</a>"; //加入行  ，下面类似
+        delCell1.className = "td";
+        row1.appendChild(delCell1);
+      //location.reload();
       clearbox();
     } else if (xmlhttp.status == 200 && state == 6) {
       var addmsg = xmlhttp.responseText;

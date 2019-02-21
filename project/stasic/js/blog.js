@@ -26,7 +26,7 @@ function loadXMLDoc(url) {
     if (state == 6) {
       xmlhttp.setRequestHeader(
         "Content-Type",
-        "multipart/form-data;");
+        "multipart/form-data");
     } else {
       xmlhttp.setRequestHeader(
         "Content-Type",
@@ -49,7 +49,7 @@ function loadXMLDoc(url) {
     }
     if (state == 6) {//上传
       console.log(img1);
-      xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=" + userID);
+      xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=1" );
     }
   } else {
     alert("Your browser does not support XMLHTTP.");

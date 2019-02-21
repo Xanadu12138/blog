@@ -23,11 +23,16 @@ function loadXMLDoc(url) {
   if (xmlhttp != null) {
     xmlhttp.onreadystatechange = state_Change;
     xmlhttp.open("POST", url, true);
+    if (state == 6) {
+      xmlhttp.setRequestHeader(
+        "Content-Type",
+        "multipart/form-data;");
+    } else {
+      xmlhttp.setRequestHeader(
+        "Content-Type",
+        "application/x-www-form-urlencoded;");
 
-    xmlhttp.setRequestHeader(
-      "Content-Type",
-      "application/x-www-form-urlencoded"
-    );
+    }
     //alert(username);
     if (state == 1 || state == 2) {//登录or注册
       //sign
@@ -235,56 +240,33 @@ function addcom() {
     alert("请先登录");
   }
 }
+
 function addmsg() {
   state = 5;
   ptitle = document.getElementById("ptitle").value;
   pcontent = document.getElementById("pcontent").value;
   loadXMLDoc("http://www.zhengchengfeng.cn:8080/addComment");
 }
+
 function upload() {
   state = 6;
-  var AllowImgFileSize = 2100000; //上传图片最大值(单位字节)（ 2 M = 2097152 B ）超过2M上传失败
-  var file=document.getElementById("img").value;
-  var pos = file.lastIndexOf("\\");
-  filename= file.substring(pos+1);
-  //alert(filename);
+  var file1 = document.getElementById("img").value;
+  var pos = file1.lastIndexOf("\\");
+  filename = file1.substring(pos + 1);
+  alert(filename);
   var filename1 = document.getElementById("img").files[0];
-  var imgUrlBase64;
   var reader = new FileReader();
+  reader.readAsBinaryString(filename1);
   if (filename1) {
-    //将文件以Data URL形式读入页面  
-    imgUrlBase64 = reader.readAsBinaryString(filename1);
     reader.onload = function (e) {
-      var ImgFileSize = reader.result.substring(reader.result.indexOf(",") + 1).length;//截取base64码部分（可选可不选，需要与后台沟通）
-      alert(ImgFileSize);
-      if (AllowImgFileSize != 0 && AllowImgFileSize < reader.result.length) {
-       
-        alert('上传失败，请上传不大于2M的图片！');
-        return;
-      } else {
-        //执行上传操作
-     // img1 = reader.result.substring(reader.result.indexOf(",") + 1);
-        img1 = reader.result;
+      img1 = reader.result;
       //  img1 = dataURLtoBlob(reader.result);
-       
-        loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
-      }
+      alert(img1);
+      loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
     }
-  }          
- 
-  
+  }
 }
 
-function dataURLtoBlob(dataurl) {
-  var arr = dataurl.split(','),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new Blob([u8arr], {
-    type: mime
-  });
-}
+
+
+

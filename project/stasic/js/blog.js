@@ -26,11 +26,11 @@ function loadXMLDoc(url) {
     if (state == 6) {
       xmlhttp.setRequestHeader(
         "Content-Type",
-        "multipart/form-data;");
+        "form-data");
     } else {
       xmlhttp.setRequestHeader(
         "Content-Type",
-        "application/x-www-form-urlencoded;");
+        "application/x-www-form-urlencoded");
 
     }
     //alert(username);

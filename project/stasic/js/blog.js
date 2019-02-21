@@ -30,7 +30,7 @@ function loadXMLDoc(url) {
     } else {
       xmlhttp.setRequestHeader(
         "Content-Type",
-        "application/x-www-form-urlencoded;");
+        "application/x-www-form-urlencoded");
 
     }
     //alert(username);

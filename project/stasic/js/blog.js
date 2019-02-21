@@ -10,6 +10,7 @@ var filename;
 var img1;
 var userID;
 var comlen;
+var form=new FormData();
 function loadXMLDoc(url) {
   xmlhttp = null;
   //alert(method1);
@@ -48,8 +49,8 @@ function loadXMLDoc(url) {
       xmlhttp.send("userID=" + userID+ "&title=" + ptitle + "&content=" + pcontent);
     }
     if (state == 6) {//上传
-      console.log(img1);
-      xmlhttp.send("filename=" + filename + "&image=" + img1 + "&userID=1" );
+      console.log(form);
+      xmlhttp.send(form);
     }
   } else {
     alert("Your browser does not support XMLHTTP.");
@@ -257,6 +258,10 @@ function upload() {
   var filename1 = document.getElementById("img").files[0];
   console.log(filename1);
   img1=filename1;
+  form.append("filename",filename);
+  form.append("Image",filename1);
+  form.append("userID",2);
+  
   loadXMLDoc("http://www.zhengchengfeng.cn:8080/upload");
 /*
   var reader = new FileReader();
